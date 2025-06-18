@@ -1,4 +1,6 @@
 package it.intesys.codylab.rookie.project.repository;
 
-public interface RookieRepository {
+public interface RookieRepository<T> {
+
+    public T save(T doctor);
 }

@@ -1,6 +1,7 @@
 package it.intesys.codylab.rookie.project.repository;
 
-import it.intesys.codylab.rookie.project.domain.Doctor;
+import it.intesys.codylab.rookie.project.domain.Patient;
+import it.intesys.codylab.rookie.project.dto.BloodGroupDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,83 +12,101 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.Optional;
 
 @Repository
-public class DoctorRepository implements RookieRepository<Doctor>, RowMapper<Doctor> {
+public class PatientRepository implements RookieRepository<Patient> {
     @Autowired
     JdbcTemplate jdbcTemplate;
-    Logger logger = LoggerFactory.getLogger(DoctorRepository.class);
+    Logger logger = LoggerFactory.getLogger(PatientRepository.class);
 
 
-    public Doctor save(Doctor doctor) {
-        if (doctor.getId() == null) {
-            Long id = jdbcTemplate.queryForObject("select nextval ('doctor_id_generator')", Long.class);
+    public Patient save(Patient patient) {
 
-            doctor.setId(id);
+        if (patient.getId() == null) {
+            Instant lastAdmission = patient.getLastAdmission();
+            BloodGroupDto bloodGroupDto = BloodGroupDto.A_MINUS;
+            String bloodType = bloodGroupDto.name();
+            Long id = jdbcTemplate.queryForObject("select nextval ('patient_id_generator')", Long.class);
+
+            patient.setId(id);
             jdbcTemplate.update("""
-                insert into doctor(id, name, surname, phone_number, address, email, avatar, profession)
-                values (?,?,?,?,?,?,?,?)""",
-                doctor.getId(), doctor.getName(), doctor.getSurname(), doctor.getPhoneNumber(),
-                doctor.getAddress(), doctor.getEmail(), doctor.getAvatar(), doctor.getProfession());
-            logger.info("Doctor created with id {}", doctor.getId());
-            return doctor;
+                insert into patient(id, opd, idp, name, surname, phone_number, address, email, avatar, blood_group,
+                 notes, chronic_patient, last_admission, last_doctor_visited_id)
+                values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+                patient.getId(), patient.getOpd(), patient.getIdp(), patient.getName(), patient.getSurname()
+                , patient.getPhoneNumber(), patient.getAddress(), patient.getEmail(), patient.getAvatar()
+                , bloodType, patient.getNotes(), patient.isChronicPatient(), Timestamp.from(lastAdmission)
+                , patient.getLastDoctorVisitedId());
+            logger.info("Patient created with id {}", patient.getId());
+            return patient;
         }else {
+            Instant lastAdmission = patient.getLastAdmission();
             jdbcTemplate.update("""
-                    update doctor set
+                    update patient set
+                            opd = ?,
+                            idp = ?,
                             name = ?,
                             surname = ?,
                             phone_number = ?,
                             address = ?,
                             email = ?,
                             avatar = ?,
-                            profession = ?
-                    where 
+                            blood_group = ?,
+                            notes = ?,
+                            chronic_patient = ?,
+                            last_admission = ?,
+                            last_doctor_visited_id = ?
+                    where
                         id = ?""",
-                    doctor.getName(), doctor.getSurname(), doctor.getPhoneNumber(), doctor.getAddress(), doctor.getEmail(),
-                    doctor.getAvatar(), doctor.getProfession(), doctor.getId());
-            return doctor;
+                    patient.getOpd(), patient.getIdp(), patient.getName(), patient.getSurname(), patient.getPhoneNumber()
+                    , patient.getAddress(), patient.getEmail(), patient.getAvatar(),patient.getBloodGroup()
+                    , patient.getNotes(), patient.isChronicPatient(), Timestamp.from(lastAdmission)
+                    , patient.getLastDoctorVisitedId(), patient.getId());
+            return patient;
         }
 
     }
 
-    public Optional<Doctor> findById(Long id) {
+    /*public Optional<Patient> findById(Long id) {
         try {
-            Doctor doctor = findById0(id);
-            return Optional.ofNullable(doctor);
+            Patient patient = findById0(id);
+            return Optional.ofNullable(patient);
         }catch(EmptyResultDataAccessException e) {
             return Optional.empty();
         }
     }
 
-    private Doctor findById0(Long id) {
-        return jdbcTemplate.queryForObject("select * from doctor where id = ?", this, id);
+    private Patient findById0(Long id) {
+        return jdbcTemplate.queryForObject("select * from patient where id = ?", this, id);
     }
 
 
     @Override
-    public Doctor mapRow(ResultSet rs, int rowNum) throws SQLException {
-        Doctor doctor = new Doctor();
-        doctor.setId(rs.getLong("id"));
-        doctor.setName(rs.getString("name"));
-        doctor.setSurname(rs.getString("surname"));
-        doctor.setPhoneNumber(rs.getString("phone_number"));
-        doctor.setAddress(rs.getString("address"));
-        doctor.setEmail(rs.getString("email"));
-        doctor.setAvatar(rs.getString("avatar"));
-        doctor.setProfession(rs.getString("profession"));
-        return doctor;
+    public Patient mapRow(ResultSet rs, int rowNum) throws SQLException {
+        Patient patient = new Patient();
+        patient.setId(rs.getLong("id"));
+        patient.setName(rs.getString("name"));
+        patient.setSurname(rs.getString("surname"));
+        patient.setPhoneNumber(rs.getString("phone_number"));
+        patient.setAddress(rs.getString("address"));
+        patient.setEmail(rs.getString("email"));
+        patient.setAvatar(rs.getString("avatar"));
+        patient.setProfession(rs.getString("profession"));
+        return patient;
 
-    }
+    }*/
 
-    public void deleteDoctorById(Long id) {
-        int count = jdbcTemplate.update("delete from doctor where id = ?", id);
+    public void deletePatientById(Long id) {
+        int count = jdbcTemplate.update("delete from patient where id = ?", id);
         idNotFound(count, id);
 
     }
     private static void idNotFound(int count, Long id) {
         if (count == 0) {
-            throw new RuntimeException("Doctor with id" + id + " not found or doesn't exist");
+            throw new RuntimeException("Patient with id" + id + " not found or doesn't exist");
         }
     }
 }

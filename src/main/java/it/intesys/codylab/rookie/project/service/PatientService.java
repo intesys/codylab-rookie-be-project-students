@@ -1,56 +1,61 @@
 package it.intesys.codylab.rookie.project.service;
 
-import it.intesys.codylab.rookie.project.domain.Doctor;
-import it.intesys.codylab.rookie.project.dto.DoctorDTO;
+import it.intesys.codylab.rookie.project.domain.Patient;
+import it.intesys.codylab.rookie.project.dto.PatientDTO;
 import it.intesys.codylab.rookie.project.exception.NotFound;
-import it.intesys.codylab.rookie.project.mapper.DoctorMapper;
-import it.intesys.codylab.rookie.project.repository.DoctorRepository;
+import it.intesys.codylab.rookie.project.mapper.PatientMapper;
+import it.intesys.codylab.rookie.project.repository.PatientRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.Optional;
 
 @Service
-public class DoctorService {
+public class PatientService {
     @Autowired
-    DoctorRepository doctorRepository;
+    PatientRepository patientRepository;
     @Autowired
-    DoctorMapper doctorMapper;
-    Logger logger = LoggerFactory.getLogger(DoctorService.class);
+    PatientMapper patientMapper;
+    Logger logger = LoggerFactory.getLogger(PatientService.class);
 
-    public DoctorDTO createDoctor(DoctorDTO doctorDTO) {
-        Doctor doctor = doctorMapper.toDomain(doctorDTO);
-        doctorRepository.save(doctor);
+    public PatientDTO createPatient(PatientDTO patientDTO) {
+        Patient patient = patientMapper.toDomain(patientDTO);
+        Instant now = Instant.now();
+        patient.setLastAdmission(now);
+        patientRepository.save(patient);
 
-        return doctorMapper.toDTO(doctor);
+        return patientMapper.toDTO(patient);
     }
 
-    public DoctorDTO updateDoctor(DoctorDTO doctorDTO) {
-        Doctor doctor = doctorMapper.toDomain(doctorDTO);
-        doctorRepository.save(doctor);
-        return doctorMapper.toDTO(doctor);
+    public PatientDTO updatePatient(PatientDTO patientDTO) {
+        Patient patient = patientMapper.toDomain(patientDTO);
+        Instant now = Instant.now();
+        patient.setLastAdmission(now);
+        patientRepository.save(patient);
+        return patientMapper.toDTO(patient);
 
     }
 
-    public DoctorDTO getDoctor(Long id) {
-        Optional<Doctor> doctorOptional = doctorRepository.findById(id);
-        if (doctorOptional.isPresent()) {
-            Doctor doctor = doctorOptional.get();
-            return doctorMapper.toDTO(doctor);
+    /*public PatientDTO getPatient(Long id) {
+        Optional<Patient> patientOptional = patientRepository.findById(id);
+        if (patientOptional.isPresent()) {
+            Patient patient = patientOptional.get();
+            return patientMapper.toDTO(patient);
         }else {
-            throw new NotFound(id, Doctor.class);
+            throw new NotFound(id, Patient.class);
         }
     }
 
-    public void deleteDoctor(Long id) {
-        Optional<Doctor> doctorOptional = doctorRepository.findById(id);
-        if (doctorOptional.isPresent()) {
-            doctorRepository.deleteDoctorById(id);
+    public void deletePatient(Long id) {
+        Optional<Patient> patientOptional = patientRepository.findById(id);
+        if (patientOptional.isPresent()) {
+            patientRepository.deletePatientById(id);
         }else {
-            throw new NotFound(id, Doctor.class);
+            throw new NotFound(id, Patient.class);
         }
 
-    }
+    }*/
 }

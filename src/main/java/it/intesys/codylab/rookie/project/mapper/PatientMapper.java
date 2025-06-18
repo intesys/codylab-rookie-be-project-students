@@ -1,40 +1,51 @@
 package it.intesys.codylab.rookie.project.mapper;
 
-import it.intesys.codylab.rookie.project.domain.Doctor;
-import it.intesys.codylab.rookie.project.dto.DoctorDTO;
+import it.intesys.codylab.rookie.project.domain.Patient;
+import it.intesys.codylab.rookie.project.dto.PatientDTO;
 import org.springframework.stereotype.Component;
 
 @Component
-public class DoctorMapper {
-    public Doctor toDomain(DoctorDTO doctorDTO) {
-        if(doctorDTO == null) return null;
+public class PatientMapper {
+    public Patient toDomain(PatientDTO patientDTO) {
+        if(patientDTO == null) return null;
 
-        Doctor doctor = new Doctor();
-        doctor.setId(doctorDTO.getId());
-        doctor.setName(doctorDTO.getName());
-        doctor.setSurname(doctorDTO.getSurname());
-        doctor.setPhoneNumber(doctorDTO.getPhoneNumber());
-        doctor.setAddress(doctorDTO.getAddress());
-        doctor.setEmail(doctorDTO.getEmail());
-        doctor.setAvatar(doctorDTO.getAvatar());
-        doctor.setProfession(doctorDTO.getProfession());
-
-        return doctor;
+        Patient patient = new Patient();
+        patient.setId(patientDTO.getId());
+        patient.setOpd(patientDTO.getOpd());
+        patient.setIdp(patientDTO.getIdp());
+        patient.setName(patientDTO.getName());
+        patient.setSurname(patientDTO.getSurname());
+        patient.setPhoneNumber(patientDTO.getPhoneNumber());
+        patient.setAddress(patientDTO.getAddress());
+        patient.setEmail(patientDTO.getEmail());
+        patient.setAvatar(patientDTO.getAvatar());
+        patient.setBloodGroup(patientDTO.getBloodGroup());
+        patient.setNotes(patientDTO.getNotes());
+        patient.setChronicPatient(patientDTO.isChronicPatient());
+        patient.setLastAdmission(patientDTO.getLastAdmission());
+        patient.setLastDoctorVisitedId(patientDTO.getLastDoctorVisitedId());
+        return patient;
     }
-    public DoctorDTO toDTO(Doctor doctor) {
-        if(doctor == null) return null;
+    public PatientDTO toDTO(Patient patient) {
+        if(patient == null) return null;
 
-        DoctorDTO doctorDTO = new DoctorDTO();
-        doctorDTO.setId(doctor.getId());
-        doctorDTO.setName(doctor.getName());
-        doctorDTO.setSurname(doctor.getSurname());
-        doctorDTO.setPhoneNumber(doctor.getPhoneNumber());
-        doctorDTO.setAddress(doctor.getAddress());
-        doctorDTO.setEmail(doctor.getEmail());
-        doctorDTO.setAvatar(doctor.getAvatar());
-        doctorDTO.setProfession(doctor.getProfession());
+        PatientDTO patientDTO = new PatientDTO();
+        patientDTO.setId(patient.getId());
+        patientDTO.setOpd(patient.getOpd());
+        patientDTO.setIdp(patient.getIdp());
+        patientDTO.setName(patient.getName());
+        patientDTO.setSurname(patient.getSurname());
+        patientDTO.setPhoneNumber(patient.getPhoneNumber());
+        patientDTO.setAddress(patient.getAddress());
+        patientDTO.setEmail(patient.getEmail());
+        patientDTO.setAvatar(patient.getAvatar());
+        patientDTO.setBloodGroup(patient.getBloodGroup());
+        patientDTO.setNotes(patient.getNotes());
+        patientDTO.setChronicPatient(patient.isChronicPatient());
+        patientDTO.setLastAdmission(patient.getLastAdmission());
+        patientDTO.setLastDoctorVisitedId(patient.getLastDoctorVisitedId());
 
-        return doctorDTO;
+        return patientDTO;
     }
 
 
