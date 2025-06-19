@@ -1,0 +1,19 @@
+#
+# docker-compose.exe -f src\main\resources\codylab-rookie-project\docker.yaml up -d
+#
+version: "3.7"
+
+services:
+  app:
+    image: ygmarchi/codylab-rookie-be-project:1.0-SNAPSHOT
+    # http://localhost:8090/swagger-ui/index.html
+    ports:
+      - 8090:8081
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_PASSWORD: admin
